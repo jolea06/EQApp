@@ -1,4 +1,4 @@
-function EQ(audioFile, gainArray)
+function EQ(audioFile, gainArray, savedName)
 clc;
 clf;
 
@@ -69,7 +69,7 @@ y = x_down + (G_sub - 1).*y_sub + (G_bass - 1).*y_bass...
     + (G_lowMids - 1)*y_lowMids + (G_mids - 1)*y_mids...
     + (G_high - 1)*y_high + (G_pres - 1)*y_pres + (G_air - 1)*y_air;
 
-audiowrite("C:\Users\jolea\OneDrive\Desktop\Cookie.wav", y, fs);% Save
+audiowrite(savedName, y, fs);% Save
 
 figure(1);
 subplot(2,1,1);
