@@ -72,6 +72,10 @@ class EQApp(QWidget):
             print(f"Slider {i} value: {currentVals[i]}")
         self.gainValues = matlab.double(currentVals) # Convert to MATLAB double array
 
+    def closeEvent(self, event):
+        self.eng.quit() # or self.eng.exit()
+        event.accept() # Confirms the window should actually close
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = EQApp()
