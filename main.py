@@ -18,7 +18,7 @@ class EQApp(QWidget):
         self.sliderLayout = QHBoxLayout() # Layout for the sliders
         self.buttonLayout = QHBoxLayout() # Layout for the buttons
 
-        self.sliderList = []
+        self.sliderList = [] # Create list to hold sliders
         for i in range(7):
             slider = QSlider()
             slider.setSingleStep(1)
@@ -29,7 +29,7 @@ class EQApp(QWidget):
             self.sliderList.append(slider)
             self.sliderLayout.addWidget(slider)
 
-        eqButton = QPushButton("Start EQ")
+        eqButton = QPushButton("Start EQ") # Create EQ Button 
         eqButton.setFixedSize(100, 50)
         self.buttonLayout.addWidget(eqButton)
 
@@ -41,7 +41,7 @@ class EQApp(QWidget):
         eqButton.clicked.connect(self.startEQ)
 
 
-    def startEQ(self):
+    def startEQ(self): # Function to start EQ process
         print("Start EQ button was clicked")
 
 if __name__ == "__main__":
