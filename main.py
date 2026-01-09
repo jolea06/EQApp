@@ -1,14 +1,26 @@
+
 import matlab.engine
-import sys
-from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, 
-                             QPushButton, QVBoxLayout, QLineEdit, 
-                             QGridLayout, QHBoxLayout, QSlider)
+import sys, os
+from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, 
+                             QGridLayout, QHBoxLayout, QSlider, QFileDialog)
+from PyQt6.QtCore import Qt
 
 # APP UI
 class EQApp(QWidget):
+
     def __init__(self):
         self.eng = matlab.engine.start_matlab() # Start MATLAB engine
-        self.eng.addpath(r"C:\Users\jolea\OneDrive\Documents\MATLAB", nargout=0) # Add path to MATLAB functions
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.eng.addpath(script_dir, nargout=0) # Add path to MATLAB functions
+
+        self.sliderList = [] # Create list to hold sliders
+        self.labelList = [] # Create list to hold labels
+        self.gainValues = matlab.double([0, 0, 0, 0, 0, 0, 0, 0]) # Default gain values
+        self.inputName = "" # Default input file name
+        self.sliderNames = ["Sub-Bass (20-60Hz)", "Bass (60-250Hz)", "Lower Mids (250-500Hz)",
+                       "Midrange (500Hz-2kHz)", "Upper Mids (2kHz-4kHz)", "Presence (4kHz-6kHz)", 
+                       "Brilliance/Air (6kHz-20kHz)", "Tone Down"]
+
         super().__init__()
         self.setWindowTitle("EQ")
         self.resize(1000, 1000)
@@ -16,61 +28,82 @@ class EQApp(QWidget):
 
         self.mainLayout = QVBoxLayout() # Main Layout for the app
         self.sliderLayout = QHBoxLayout() # Layout for the sliders
-        self.labelLayout = QHBoxLayout() # Layout for the labels
         self.sliderLabelLayout = QVBoxLayout() # Layout for slider labels
         self.buttonLayout = QHBoxLayout() # Layout for the buttons
 
-        self.sliderList = [] # Create list to hold sliders
-        for i in range(7):
+        for i in range(8): # Create sliders and labels
+            col = QVBoxLayout() # Create column layout for each slider/label pair
             slider = QSlider()
+
             slider.setSingleStep(1)
             slider.setTickInterval(1)
-            slider.setMinimum(-20)
-            slider.setMaximum(10)
-            slider.setFixedHeight(150)
             slider.valueChanged.connect(self.sliderValues) # Connect slider to function
-            self.sliderList.append(slider)
-            self.sliderLayout.addWidget(slider)
-        toneDownSlider = QSlider() # Create Tone Down Slider
-        toneDownSlider.setSingleStep(1)
-        toneDownSlider.setTickInterval(1)
-        toneDownSlider.setMinimum(-10)
-        toneDownSlider.setMaximum(0)
-        toneDownSlider.setFixedHeight(100)
-        toneDownSlider.valueChanged.connect(self.sliderValues) # Connect slider to function
-        self.sliderList.append(toneDownSlider)
-        self.sliderLayout.addWidget(toneDownSlider)
+            if i != 7:
+                slider.setMinimum(-20)
+                slider.setMaximum(10)
+                slider.setFixedHeight(150)
+            else:
+                slider.setMinimum(-10)
+                slider.setMaximum(0)
+                slider.setFixedHeight(100)
+
+            label = QLabel(f"{self.sliderNames[i]} \nGain (dB): {0}") # Create label for slider
+            label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            label.setWordWrap(True)
+            self.labelList.append(label) # Add label to list
+
+            col.addWidget(slider, alignment=Qt.AlignmentFlag.AlignHCenter)
+            col.addWidget(label, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+            self.sliderList.append(slider) # Add slider to list
+            self.sliderLayout.addLayout(col) # Add column to slider layout
 
         eqButton = QPushButton("Start EQ") # Create EQ Button 
         eqButton.setFixedSize(100, 50)
         self.buttonLayout.addWidget(eqButton)
+        eqButton.clicked.connect(self.startEQ) # Connect button to function
 
-        sliderNames = ["Sub-Bass (20-60Hz)", "Bass (60-250Hz)", "Lower Mids (250-500Hz)",
-                       "Midrange (500Hz-2kHz)", "Upper Mids (2kHz-4kHz)", "Presence (4kHz-6kHz)", 
-                       "Brilliance/Air (6kHz-20kHz)", "Tone Down"]
+        fileButton = QPushButton("Select File") # Create File Select Button
+        fileButton.setFixedSize(100, 50)
+        self.buttonLayout.addWidget(fileButton)
+        fileButton.clicked.connect(self.fileInput) # Connect button to function 
         
-        for i in range(8):
-            label = QLabel(f"{sliderNames[i]}")
-            self.labelLayout.addWidget(label)
+        self.fileNameLabel = QLabel("No file selected") # Label to show selected file
+        self.fileNameLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.mainLayout.addLayout(self.sliderLayout) # Add slider layout to main layout
-        self.mainLayout.addLayout(self.labelLayout, 7)
-        self.mainLayout.addLayout(self.buttonLayout, 1)
+        self.mainLayout.addWidget(self.fileNameLabel, alignment=Qt.AlignmentFlag.AlignHCenter)
+        self.mainLayout.addLayout(self.buttonLayout)
 
         self.setLayout(self.mainLayout) # Use Main Layout for current window
 
-        eqButton.clicked.connect(self.startEQ)
-
     def startEQ(self): # Function to start EQ process
-        self.eng.EQ(r"C:\Users\jolea\Downloads\cokkie.mp3", self.gainValues, nargout=0)
-        print("Start EQ button was clicked")
+        savedName = self.saveFileName()
+        self.eng.EQ(self.inputName, self.gainValues, savedName, nargout=0)
+        print(f"EQ processing complete. Saved as: {savedName}")
 
     def sliderValues(self): # Function to get slider values
         currentVals = []
         for i in range(8):
             currentVals.append(self.sliderList[i].value())
-            print(f"Slider {i} value: {currentVals[i]}")
+            self.labelList[i].setText(f"{self.sliderNames[i]} \nGain (dB): {currentVals[i]}") # Update label with current gain value
         self.gainValues = matlab.double(currentVals) # Convert to MATLAB double array
+
+    def fileInput(self): # Function to select input file
+        self.inputName, _ = QFileDialog.getOpenFileName(self, "Select Audio File", "", "Audio Files (*.mp3 *.wav)")
+        if self.inputName:
+            self.fileNameLabel.setText(os.path.basename(self.inputName)) # Update label with selected file name
+
+    def saveFileName(self): # Function to get save file name
+        savedName, _ = QFileDialog.getSaveFileName(self,"Save Processed File","","WAV Files (*.wav);;All Files (*)", 
+                                                   options=QFileDialog.Option.DontUseNativeDialog)
+        if not savedName: # If no file name is provided, return None
+            return None
+        
+        if not savedName.lower().endswith('.wav'): # Ensure .wav extension
+            savedName += '.wav'
+
+        return savedName 
 
     def closeEvent(self, event):
         self.eng.quit() # or self.eng.exit()
