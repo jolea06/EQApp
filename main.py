@@ -4,6 +4,7 @@ import sys, os
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, 
                              QGridLayout, QHBoxLayout, QSlider, QFileDialog)
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
 
 # APP UI
 class EQApp(QWidget):
@@ -13,6 +14,13 @@ class EQApp(QWidget):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         self.eng.addpath(script_dir, nargout=0) # Add path to MATLAB functions
 
+        super().__init__()
+
+        # Inside __init__
+        script_dir_icon = os.path.dirname(os.path.abspath(__file__))
+        icon_path = os.path.join(script_dir_icon, "eq_icon.png") # Make sure the name matches your file
+        self.setWindowIcon(QIcon(icon_path))
+
         self.sliderList = [] # Create list to hold sliders
         self.labelList = [] # Create list to hold labels
         self.gainValues = matlab.double([0, 0, 0, 0, 0, 0, 0, 0]) # Default gain values
@@ -21,7 +29,6 @@ class EQApp(QWidget):
                        "Midrange (500Hz-2kHz)", "Upper Mids (2kHz-4kHz)", "Presence (4kHz-6kHz)", 
                        "Brilliance/Air (6kHz-20kHz)", "Tone Down"]
 
-        super().__init__()
         self.setWindowTitle("EQ")
         self.resize(1000, 1000)
         self.setMinimumSize(200, 200)
