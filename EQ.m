@@ -1,6 +1,5 @@
 function EQ(audioFile, gainArray, savedName)
 clc;
-clf;
 
 [x, fs] = audioread(audioFile);
 t = (0:length(x)-1) / fs;
@@ -71,7 +70,7 @@ y = x_down + (G_sub - 1).*y_sub + (G_bass - 1).*y_bass...
 
 audiowrite(savedName, y, fs);% Save
 
-figure(1);
+fig = figure('Visible', 'off');
 subplot(2,1,1);
 plot(t, x);
 xlabel('Time (seconds)');
@@ -87,5 +86,8 @@ ylabel('Amplitude');
 title('Filtered Audio Signal');
 legend('Left Channel', 'Right Channel');
 ylim([-1 1]);
+
+exportgraphics(fig, 'signal_comparison.png')
+close(fig)
 
 end
