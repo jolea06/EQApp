@@ -6,10 +6,21 @@ from PyQt6.QtCore import (Qt, QThread, pyqtSignal)
 from PyQt6.QtGui import (QIcon, QPixmap, QMovie)
 from matlabworker import MATLABWorkerThread
 
-if platform.system() == "Windows":
+if platform.system() == "Windows": # Windows fix for taskbar icon
     import ctypes
     myappid = 'myteam.audioapp.eq.1.0'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+if platform.system() == "Darwin": # MacOS menu name fix
+    try:
+        from AppKit import NSBundle
+        bundle = NSBundle.mainBundle()
+        if bundle:
+            info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
+            if info and 'CFBundleName' in info:
+                info['CFBundleName'] = "Audio EQ App"
+    except ImportError:
+        pass
 
 # APP UI
 class EQApp(QMainWindow):
