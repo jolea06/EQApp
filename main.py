@@ -1,13 +1,15 @@
 import matlab.engine
-import sys, os, ctypes
+import sys, os, platform
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, 
                              QGridLayout, QHBoxLayout, QSlider, QFileDialog, QStackedWidget, QMainWindow)
 from PyQt6.QtCore import (Qt, QThread, pyqtSignal)
 from PyQt6.QtGui import (QIcon, QPixmap, QMovie)
 from matlabworker import MATLABWorkerThread
 
-myappid = 'mycompany.myproduct.subproduct.version' # Set a unique App ID, so app icon shows in taskbar
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+if platform.system() == "Windows":
+    import ctypes
+    myappid = 'myteam.audioapp.eq.1.0'
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 # APP UI
 class EQApp(QMainWindow):
@@ -20,7 +22,10 @@ class EQApp(QMainWindow):
         
         super().__init__() # Start init
 
-        self.setWindowIcon(QIcon("eq_icon.ico")) # Set App Icon
+        if platform.system() == "Windows": # Check OS for icon type
+            self.setWindowIcon(QIcon("eq_icon.ico"))
+        else:
+            self.setWindowIcon(QIcon("eq_icon.png"))
         self.setWindowTitle("EQ") # Presey app window size
         self.resize(1200, 1000)
         self.setMinimumSize(200, 200)
