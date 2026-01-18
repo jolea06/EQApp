@@ -165,8 +165,15 @@ class EQApp(QMainWindow):
         self.results_layout.addStretch(1)
 
     def startEQ(self): # Function to start EQ process
+        if self.input_name == "": # Check if input file is selected
+            self.file_name_label.setText("Please select an audio file first.")
+            return
         self.refreshResultsScreen()
         self.saved_name = self.saveFileName()
+
+        if self.saved_name is None: # If no save name provided, return
+            return
+
         self.stacked_screens.setCurrentIndex(1)
         
         self.worker_thread = MATLABWorkerThread(self.eng, self.input_name, self.gain_values, self.saved_name)
