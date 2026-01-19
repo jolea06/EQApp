@@ -1,26 +1,67 @@
-# 🎚️ Digital Audio Equalizer
+# Audio Equalizer (PyQt & MATLAB)
 
-This application is an 8-band audio equalizer that uses a **Python (PyQt6)** interface to control a **MATLAB** DSP backend. It allows you to modify the frequency response of any audio file and export the result as a high-quality `.wav` file.
+A high-performance desktop application that integrates **Python (PyQt6)** with a **MATLAB Engine** to perform digital signal processing on audio files.
+
+## Prerequisites
+
+Before running the application, ensure the following are installed on your machine:
+
+1. **MATLAB**: R2022a or newer (with the **Signal Processing Toolbox**).
+2. **Python**: Version 3.9, 3.10, or 3.11 (64-bit).
+   * *Note: Ensure Python is added to your system PATH during installation.*
 
 ---
 
-## 🎮 How to Use
+## Installation & Setup
 
-1. **Select a File:** Click the **"Select File"** button to choose your input audio (`.mp3` or `.wav`).
-2. **Adjust Gains:** Move the **8 Sliders** to change the volume of specific frequencies. Labels will update in real-time to show your current dB settings.
-3. **Save File:** Click **"Start EQ"**. A window will appear for you to name your file and choose a save location. The app ensures the `.wav` extension is added automatically.
+Follow these steps to set up the environment on a new machine:
 
----
+### 1. Clone the Repository
+Copy the project folder containing the `.py` source files and any associated `.m` MATLAB scripts.
 
-## 🛠️ Installation Requirements
+### 2. Install Python Dependencies
+Open your terminal or command prompt and install the required GUI and engine libraries:
 
-To run this application, you must have **MATLAB** (R2020b or later) installed to support the DSP backend and the `matlabengine` package.
-
-### 1. Prerequisites
-* **Python**: Versions 3.9 through 3.12 are recommended.
-* **System**: A 64-bit operating system to match the MATLAB architecture.
-
-### 2. Install PyQt6
-This library handles the graphical user interface. Open your terminal and run:
 ```bash
 pip install PyQt6
+pip install matlabengine
+```
+
+### 3. Verify MATLAB Engine
+The application requires the **MATLAB Engine API for Python** to communicate with the processing scripts. 
+
+> **Note:** If `pip install matlabengine` fails, ensure your Python version is compatible with your installed MATLAB version. You may need to install it manually using the `setup.py` script located in your MATLAB `extern/engines/python` directory.
+
+To verify that the bridge is installed correctly, run:
+
+```bash
+python -c "import matlab.engine; print('MATLAB Engine Ready')"
+```
+
+---
+
+## Running the Application
+
+### Option 1: VS Code (Recommended for Development)
+To run and debug the app in VS Code, ensure you have the following installed:
+
+* **Required Extensions:**
+    * **Python** (by Microsoft): Required to execute and debug the Python source code.
+    * **MATLAB** (by MathWorks): Provides syntax highlighting and snippet support for your `.m` filtering scripts.
+    * **Qt for Python** (by its-pelle): Provides better intellisense and linting for your **PyQt6** GUI components.
+
+* **Execution Steps:** 1. Open the project folder in VS Code.
+    2. Open `main.py`.
+    3. Click the **Run** button (play icon) in the top-right corner, or press `F5` to debug.
+
+### Option 2: Command Line
+Navigate to the project directory using your terminal or command prompt and run:
+
+```bash
+python main.py
+```
+---
+
+## Current Status: UI Polish
+
+> **Note:** The application is **fully functional and stable**, performing all signal processing tasks as intended. I am currently in the final stages of the project, focusing on polishing the user interface and optimizing the layout for a more professional aesthetic.
