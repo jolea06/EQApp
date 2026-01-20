@@ -156,11 +156,12 @@ class EQApp(QMainWindow):
         self.image_with_title.addWidget(self.image_title, alignment=Qt.AlignmentFlag.AlignHCenter) # Alignment for widget
         self.image_with_title.addWidget(self.label_image, alignment=Qt.AlignmentFlag.AlignHCenter)
 
-        back_button = QPushButton("back") # Back button
-        back_button.setFixedSize(100, 50)
-        back_button.clicked.connect(self.goBack)
+        self.back_button = QPushButton("back") # Back button
+        self.back_button.setFixedSize(100, 50)
+        self.back_button.clicked.connect(self.goBack)
+        self.back_button.setVisible(False)
 
-        self.results_layout.addWidget(back_button)
+        self.results_layout.addWidget(self.back_button)
         self.results_layout.addLayout(self.image_with_title)
         self.results_layout.addStretch(1)
 
@@ -216,13 +217,15 @@ class EQApp(QMainWindow):
         self.label_image.setPixmap(new_image)
         self.label_image.update()
         self.image_title.setText("Equalized Audio Comparison")
+        self.back_button.setVisible(True)
 
     def refreshResultsScreen(self): # Function to refresh/reset the results screen with loading
         self.loading = QMovie('loading.gif')
         self.label_image.setMovie(self.loading)
         self.loading.start()
         self.image_title.setText("Loading...")
-
+        self.back_button.setVisible(False)
+        
     def closeEvent(self, event): # Event handling the closing of the app
         self.eng.quit() # or self.eng.exit()
         event.accept() # Confirms the window should actually close
