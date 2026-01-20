@@ -48,7 +48,7 @@ To run and debug the app in VS Code, ensure you have the following installed:
 * **Required Extensions:**
     * **Python** (by Microsoft): Required to execute and debug the Python source code.
     * **MATLAB** (by MathWorks): Provides syntax highlighting and snippet support for your `.m` filtering scripts.
-    * **Qt for Python** (by its-pelle): Provides better intellisense and linting for your **PyQt6** GUI components.
+    * **Qt for Python** (by its-pelle): Provides better intellisense and linting for **PyQt6** GUI components.
 
 * **Execution Steps:** 1. Open the project folder in VS Code.
     2. Open `main.py`.
@@ -64,4 +64,4 @@ python main.py
 
 ## Current Status: UI Polish
 
-> **Note:** The application is **fully functional and stable**, performing all signal processing tasks as intended. I am currently in the final stages of the project, focusing on polishing the user interface and optimizing the layout for a more professional aesthetic.
+> **Note:** The application is **fully functional and stable**, performing all tasks as intended. I am currently in the final stages of the project, focusing on polishing the user interface and optimizing the layout for a more professional aesthetic.
