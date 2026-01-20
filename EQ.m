@@ -13,56 +13,42 @@ G_sub = 10^(gainArray(1)/20);
 [z, p, k] = butter(n, Wn, 'low');
 [sos, g] = zp2sos(z, p, k);
 y_sub = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 G_bass = 10^(gainArray(2)/20);
 Wp_bass = [60 275] ./ nyq;
 [z, p, k] = butter(6, Wp_bass, 'bandpass');
 [sos, g] = zp2sos(z, p, k);
 y_bass = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 G_lowMids = 10^(gainArray(3)/20);
 Wp_low = [250 500] ./ nyq;
 [z, p, k] = butter(6, Wp_low, 'bandpass');
 [sos, g] = zp2sos(z, p, k);
 y_lowMids = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 G_mids = 10^(gainArray(4)/20);
 Wp_mids = [500 2000] ./ nyq;
 [z, p, k] = butter(6, Wp_mids, 'bandpass');
 [sos, g] = zp2sos(z, p, k);
 y_mids = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 G_high = 10^(gainArray(5)/20);
 Wp_high = [2000 4000] ./ nyq;
 [z, p, k] = butter(6, Wp_high, 'bandpass');
 [sos, g] = zp2sos(z, p, k);
 y_high = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 G_pres = 10^(gainArray(6)/20);
 Wp_pres = [4000 6000] ./ nyq;
 [z, p, k] = butter(6, Wp_pres, 'bandpass');
 [sos, g] = zp2sos(z, p, k);
 y_pres = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 G_air = 10^(gainArray(7)/20);
 Wp_air = [6000 20000] ./ nyq;
 [z, p, k] = butter(n, Wp_air, 'bandpass'); 
 [sos, g] = zp2sos(z, p, k);
 y_air = filtfilt(sos, g, x_down);
-Hd = dfilt.df2tsos(sos, g);
-% fvtool(Hd, 'Fs', fs);
 
 y = x_down + (G_sub - 1).*y_sub + (G_bass - 1).*y_bass...
     + (G_lowMids - 1)*y_lowMids + (G_mids - 1)*y_mids...
